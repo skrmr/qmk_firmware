@@ -13,9 +13,14 @@ enum {
 };
 
 enum {
-	KEYLED_TOG = SAFE_RANGE
+	KEYLED_TOG = SAFE_RANGE,
+	LAYOUT
 };
 
+enum  {
+	DEFAULT = 0, // Normal US intl layout
+	ALTGR = 1 // Simulate dead keys on AltGr for US intl layout
+} accent_layout = 0;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT_ortho_5x15(    
@@ -39,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		XXXXXXX , KC_F11  , KC_F12  , XXXXXXX , XXXXXXX  , XXXXXXX , RGB_HUD   , RGB_VAD , RGB_SAD , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX   , XXXXXXX   , XXXXXXX    , 
 		XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX  , XXXXXXX , RGB_MOD   , KC_INS  , RGB_RMOD, XXXXXXX , XXXXXXX , RESET   , XXXXXXX   , XXXXXXX   , KC_WAKE    ,
 		_______ , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX  , XXXXXXX , KEYLED_TOG, KC_CALC , RGB_TOG , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX   , XXXXXXX   , _______    , 
-		_______ , XXXXXXX , _______ , XXXXXXX , XXXXXXX  , XXXXXXX , KC_VOLD   , KC_MUTE , KC_VOLU , XXXXXXX , XXXXXXX , _______ , XXXXXXX   , XXXXXXX   , XXXXXXX    
+		_______ , XXXXXXX , _______ , XXXXXXX , XXXXXXX  , XXXXXXX , KC_VOLD   , KC_MUTE , KC_VOLU , XXXXXXX , XXXXXXX , _______ , XXXXXXX   , XXXXXXX   , LAYOUT    
 	)
 };
 
@@ -49,14 +54,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	switch(keycode) {	
 		case RESET:
 			if (record->event.pressed) {
-				_delay_ms(100);
-				keycaps_led_on();
-				_delay_ms(100);
-				keycaps_led_off();
-				_delay_ms(100);
-				keycaps_led_on();
-				_delay_ms(100);
-				keycaps_led_off();
+				for (int i=0; i<10; i++) {
+					keycaps_led_on();
+					_delay_ms(50);
+					keycaps_led_off();
+					_delay_ms(50);
+				}
 				reset_keyboard();
 			}	
 			return false;
@@ -65,38 +68,65 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 				keyled_toggle();
 			}
 			return false;
-		case KC_QUOT:
-		case KC_GRV:
-			if (record->event.pressed) {				
-				if (mods & MOD_BIT(KC_RALT))	{
-					unregister_code(KC_RALT);
-					tap_code(keycode);
-					register_code(KC_RALT);
-				} else {		
-					tap_code(keycode);
-					tap_code(KC_SPC);
-				}
-			}
-			return false;
-		case KC_6:
-			if (mods & (MOD_BIT(KC_LSFT)| MOD_BIT(KC_RSFT) )) {
-				if (record->event.pressed) {
-					if (mods & (MOD_BIT(KC_RALT))) {
-						unregister_code(KC_RALT);
-						tap_code(keycode);
-						register_code(KC_RALT);
-					} else {
-						tap_code(keycode);
-						tap_code(KC_SPC);
+	}
+
+	if ((keycode == LAYOUT) && (record->event.pressed)) {
+		switch (accent_layout) {
+			default:
+			case DEFAULT:
+				accent_layout = ALTGR;
+				break;
+			case ALTGR:
+				accent_layout = DEFAULT;
+				break;
+		}
+		keyled_blink(accent_layout+1);
+		return false;
+	}
+
+	switch(accent_layout) {
+		case DEFAULT:
+			break;
+			// return true;
+		case ALTGR:
+			switch(keycode) {
+				//
+				// Accents
+				//
+				case KC_QUOT:
+				case KC_GRV:
+					if (record->event.pressed) {				
+						if (mods & MOD_BIT(KC_RALT))	{
+							unregister_code(KC_RALT);
+							tap_code(keycode);
+							register_code(KC_RALT);
+						} else {		
+							tap_code(keycode);
+							tap_code(KC_SPC);
+						}
 					}
-				}
-				return false;
-			} else {
-				return true;
+					return false;
+				case KC_6:
+					if (record->event.pressed) {
+						if (mods & (MOD_BIT(KC_RALT))) {
+							unregister_code(KC_RALT);
+							register_code(KC_LSFT);
+							tap_code(KC_6);
+							unregister_code(KC_LSFT);
+							register_code(KC_RALT);
+						} else {
+							tap_code(keycode);
+							tap_code(KC_SPC);
+						}
+						return false;
+					}
+					 // else {
+					//	return true;
+					//}
 			}
-		default:
-			return true;		
-	}	
+			break;
+	}			
+	return true;
 }
 
 layer_state_t layer_state_set_user(layer_state_t state)
