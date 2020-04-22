@@ -28,7 +28,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	 	KC_TAB     , KC_Q    , KC_W      , KC_E      , KC_R      , KC_T    , KC_LBRC   , KC_BSLS , KC_RBRC , KC_Y    , KC_U    , KC_I    , KC_O    , KC_P    , KC_QUOT , 
 		TO(_NUMPAD), KC_A    , KC_S      , KC_D      , KC_F      , KC_G    , KC_HOME   , KC_DEL  , KC_PGUP , KC_H    , KC_J    , KC_K    , KC_L    , KC_SCLN , KC_ENT  , 
 		KC_LSFT    , KC_Z    , KC_X      , KC_C      , KC_V      , KC_B    , KC_END    , KC_UP   , KC_PGDN , KC_N    , KC_M    , KC_COMM , KC_DOT  , KC_SLSH , KC_RSFT , 
-		KC_LCTL    , KC_LGUI , KC_LALT   , MO(_FN)   , KC_SPC    , KC_SPC  , KC_LEFT   , KC_DOWN , KC_RGHT , KC_SPC  , KC_SPC  , MO(_FN) , KC_RALT , KC_RGUI , KC_RCTL
+		KC_LCTL    , KC_LGUI , MO(_FN)   , KC_LALT   , KC_SPC    , KC_SPC  , KC_LEFT   , KC_DOWN , KC_RGHT , KC_SPC  , KC_SPC  , KC_RALT , MO(_FN) , KC_RGUI , KC_RCTL
 	)
 	,  
 	[_NUMPAD] = LAYOUT_ortho_5x15(   
@@ -44,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		XXXXXXX    , KC_F6   , KC_F7     , KC_F8     , KC_F9     , KC_F10  , RGB_HUD   , RGB_VAD , RGB_SAD , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX    , 
 		XXXXXXX    , KC_F11  , KC_F12    , XXXXXXX   , XXXXXXX   , XXXXXXX , RGB_MOD   , KC_INS  , RGB_RMOD, XXXXXXX , XXXXXXX , RESET   , XXXXXXX , XXXXXXX , KC_WAKE    ,
 		_______    , XXXXXXX , XXXXXXX   , XXXXXXX   , XXXXXXX   , XXXXXXX , KEYLED_TOG, KC_CALC , RGB_TOG , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX , XXXXXXX , _______    , 
-		_______    , XXXXXXX , _______   , XXXXXXX   , XXXXXXX   , XXXXXXX , KC_VOLD   , KC_MUTE , KC_VOLU , XXXXXXX , XXXXXXX , _______ , XXXXXXX , XXXXXXX , LAYOUT    
+		_______    , XXXXXXX , XXXXXXX   , _______   , XXXXXXX   , XXXXXXX , KC_VOLD   , KC_MUTE , KC_VOLU , XXXXXXX , XXXXXXX , XXXXXXX , _______ ,  XXXXXXX , LAYOUT    
 	)
 };
 
